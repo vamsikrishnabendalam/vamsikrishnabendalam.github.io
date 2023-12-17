@@ -67086,7 +67086,7 @@ return A.jI(B.I,r.e,B.v,p,m,m,m,m,m,new A.aW(o,l,o,l),m,m,q)}}},
 $S:422}
 A.Ej.prototype={
 L(a){var s=null
-return new A.ui(new A.m2(B.Eb,new A.uQ(),s),"My Portfolio",A.aiv(s,B.hL,s),!1,s)}}
+return new A.ui(new A.m2(B.Eb,new A.uQ(),s),"Vamsi Krishna Bendalam",A.aiv(s,B.hL,s),!1,s)}}
 A.AI.prototype={
 L(a){var s=null,r="assets/images/pro2.png",q=A.bN(a,s,t.w).w,p=t.E
 return new A.ir(A.dr(A.a([this.yN(),A.ao(s,35,s),A.Tc(A.o0(r,s,s,450,400),B.b4)],p),B.M,B.F,B.T),A.eP(A.a([A.Tc(A.o0(r,s,s,450,400),B.b4),A.ao(s,s,25),A.CM(this.yN(),1)],p),B.M,B.F,B.T),A.eP(A.a([A.Tc(A.o0(r,s,s,450,400),B.b4),A.ao(s,s,25),A.CM(this.yN(),1)],p),B.M,B.F,B.T),q.a.a*0.1,B.cB,s)},
