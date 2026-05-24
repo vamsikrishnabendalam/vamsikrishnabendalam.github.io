@@ -1,20 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FormEvent, useState } from "react";
+import { FormEvent, ReactNode, useState } from "react";
 import { profile } from "@/lib/data";
 import { SectionHeader } from "@/components/hud/SectionHeader";
 import { GlowButton } from "@/components/hud/GlowButton";
-import { FiSend, FiMail, FiLinkedin, FiGithub, FiPhone } from "react-icons/fi";
+import {
+  FiSend,
+  FiMail,
+  FiLinkedin,
+  FiGithub,
+  FiPhone,
+  FiUser,
+  FiBriefcase,
+} from "react-icons/fi";
 
-type Status = "idle" | "sending" | "ok" | "err" | "info";
+type Status = "idle" | "sending" | "ok" | "err";
+type Affiliation = "individual" | "company";
 
-const FORMSPREE_ENDPOINT =
-  process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || ""; // e.g. https://formspree.io/f/xxxxxxxx
+const FORMSPREE_ENDPOINT = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "";
 
 export function Contact() {
   const [status, setStatus] = useState<Status>("idle");
   const [msg, setMsg] = useState("");
+  const [affiliation, setAffiliation] = useState<Affiliation>("individual");
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -22,16 +31,10 @@ export function Contact() {
     const data = new FormData(form);
 
     if (!FORMSPREE_ENDPOINT) {
-      // Fallback: open mail client
-      const subject = encodeURIComponent(
-        `JARVIS uplink — ${data.get("name") || "anonymous"}`,
+      setStatus("err");
+      setMsg(
+        `Form not configured yet. Email me directly at ${profile.email}.`,
       );
-      const body = encodeURIComponent(
-        `${data.get("message")}\n\n— ${data.get("name")} <${data.get("email")}>`,
-      );
-      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-      setStatus("info");
-      setMsg("Mail client opened. Send when ready.");
       return;
     }
 
@@ -46,13 +49,14 @@ export function Contact() {
         setStatus("ok");
         setMsg("Transmission complete. I'll respond shortly.");
         form.reset();
+        setAffiliation("individual");
       } else {
         setStatus("err");
-        setMsg("Uplink failed. Try email instead.");
+        setMsg("Uplink failed. Try emailing me directly.");
       }
     } catch {
       setStatus("err");
-      setMsg("Network error. Try email instead.");
+      setMsg("Network error. Try emailing me directly.");
     }
   }
 
@@ -141,9 +145,53 @@ export function Contact() {
             <span className="pointer-events-none absolute -bottom-px -right-px h-3 w-3 border-r border-b border-cyan/70" />
 
             <Field name="name" label="OPERATOR NAME" required />
-            <Field name="email" type="email" label="UPLINK ADDRESS" required />
-            <Field name="subject" label="TRANSMISSION SUBJECT" />
+            <Field name="email" type="email" label="UPLINK EMAIL ADDRESS" required />
+
+            <div>
+              <span className="block font-mono text-[10px] tracking-[0.3em] text-text-faint mb-1.5">
+                AFFILIATION <span className="text-red">*</span>
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <AffiliationToggle
+                  selected={affiliation === "individual"}
+                  onClick={() => setAffiliation("individual")}
+                  icon={<FiUser />}
+                  label="Individual"
+                />
+                <AffiliationToggle
+                  selected={affiliation === "company"}
+                  onClick={() => setAffiliation("company")}
+                  icon={<FiBriefcase />}
+                  label="Company"
+                />
+              </div>
+              <input type="hidden" name="affiliation" value={affiliation} />
+            </div>
+
+            {affiliation === "company" ? (
+              <Field
+                key="company"
+                name="company"
+                label="COMPANY / ORGANIZATION"
+                required
+              />
+            ) : null}
+            <Field
+              name="role"
+              label={
+                affiliation === "company"
+                  ? "YOUR ROLE AT COMPANY"
+                  : "ROLE / TITLE (optional)"
+              }
+              required={affiliation === "company"}
+            />
             <Field name="message" label="MESSAGE" required textarea />
+
+            <input
+              type="hidden"
+              name="_subject"
+              value={`JARVIS uplink — ${affiliation === "company" ? "company" : "individual"} contact`}
+            />
 
             <div className="flex items-center justify-between gap-4">
               <div
@@ -153,17 +201,15 @@ export function Contact() {
                   status === "ok"
                     ? "text-green-400"
                     : status === "err"
-                    ? "text-red"
-                    : status === "info"
-                    ? "text-cyan"
-                    : "text-text-faint"
+                      ? "text-red"
+                      : "text-text-faint"
                 }`}
               >
                 {status === "sending"
                   ? "// transmitting..."
-                  : status === "ok" || status === "err" || status === "info"
-                  ? msg
-                  : "// awaiting input"}
+                  : status === "ok" || status === "err"
+                    ? msg
+                    : "// awaiting input"}
               </div>
               <GlowButton
                 variant="primary"
@@ -208,5 +254,33 @@ function Field({
         <input name={name} type={type} required={required} className={cls} />
       )}
     </label>
+  );
+}
+
+function AffiliationToggle({
+  selected,
+  onClick,
+  icon,
+  label,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  icon: ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={`relative flex items-center justify-center gap-2 border px-4 py-3 font-mono text-xs tracking-widest uppercase transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan ${
+        selected
+          ? "border-cyan/60 bg-cyan/10 text-cyan"
+          : "border-text-dim/20 text-text-dim hover:border-cyan/40 hover:text-cyan/80"
+      }`}
+    >
+      <span className="text-base leading-none">{icon}</span>
+      {label}
+    </button>
   );
 }
