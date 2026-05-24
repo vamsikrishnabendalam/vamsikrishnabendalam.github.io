@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# J.A.R.V.I.S. // Vamsi Krishna Bendalam
 
-## Getting Started
+> Just A Rather Very Intelligent System.
+> Iron-Man-HUD inspired personal portfolio.
 
-First, run the development server:
+A Next.js 16 + React 19 + Three.js + GSAP + Framer Motion + Tailwind 4 portfolio,
+designed as a Stark-Industries-style operator console. Statically exported and
+deployed via GitHub Pages.
+
+## Stack
+
+- **Next.js 16** (App Router, static export)
+- **React 19** + **TypeScript**
+- **Three.js** + **@react-three/fiber** + **@react-three/drei** — 3D arc reactor & skills constellation
+- **GSAP** + **Framer Motion** — cinematic motion & UI transitions
+- **Tailwind CSS 4** — design system
+- **react-icons** — iconography
+- Fonts: **Orbitron** (display), **Rajdhani** (sans), **JetBrains Mono** (mono)
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production build (static export)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+# Output → ./out
+```
 
-## Learn More
+The `out/` directory contains the static site ready to upload anywhere.
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy to GitHub Pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+A workflow is included at [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### One-time setup
 
-## Deploy on Vercel
+1. Push this repo to **`vamsikrishnabendalam/vamsikrishnabendalam.github.io`** (the user-site repo).
+2. On GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. (Optional) Add a repo secret `NEXT_PUBLIC_FORMSPREE_ENDPOINT` with your Formspree form URL to enable the contact form. Without it, the form falls back to `mailto:`.
+4. Push to `main` — the workflow builds and deploys automatically.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The live site will be available at **https://vamsikrishnabendalam.github.io**.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project structure
+
+```
+src/
+  app/
+    layout.tsx        Root layout, fonts, metadata
+    page.tsx          Composes all sections + boot sequence
+    globals.css       Jarvis theme tokens & animations
+  components/
+    hud/              Reusable HUD primitives (HudFrame, GlowButton, etc.)
+    three/            3D scenes (ArcReactor, SkillsConstellation)
+    sections/         Page sections (Hero, About, Experience, ...)
+  lib/
+    data.ts           All resume content centralized here
+    utils.ts          cn() class helper
+public/
+  Vamsi_Krishna_Bendalam_Resume.pdf
+```
+
+To update résumé content, edit [`src/lib/data.ts`](src/lib/data.ts).
+
+## Customisation tips
+
+- **Tweak the boot intro**: edit `bootLines` in [`src/components/sections/BootSequence.tsx`](src/components/sections/BootSequence.tsx).
+- **Arc reactor colors / rings**: tune `ArcReactor.tsx` (ring radii, speeds, colors).
+- **Skills radar**: edit `skillsRadar` in `data.ts` — auto-distributes nodes on a sphere.
+- **Section copy**: every section reads from `data.ts`. No magic strings.
+
+## Credits
+
+Designed and engineered by **Vamsi Krishna Bendalam** ([LinkedIn](https://www.linkedin.com/in/vamsi-krishna-bendalam)).
+Visual language inspired by Stark Industries operator interfaces.

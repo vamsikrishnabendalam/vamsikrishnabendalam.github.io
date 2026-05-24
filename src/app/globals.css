@@ -1,26 +1,311 @@
 @import "tailwindcss";
 
+@theme {
+  --color-bg: #02050a;
+  --color-bg-elev: #050b14;
+  --color-panel: rgba(8, 18, 32, 0.6);
+  --color-grid: rgba(57, 217, 255, 0.07);
+
+  --color-cyan: #39d9ff;
+  --color-cyan-soft: #6be3ff;
+  --color-cyan-dim: #1a7fa8;
+  --color-gold: #ffb547;
+  --color-gold-soft: #ffd27a;
+  --color-red: #ff4a4a;
+  --color-text: #d6f1ff;
+  --color-text-dim: #7da3bd;
+  --color-text-faint: #3d5970;
+
+  --font-display: var(--font-orbitron);
+  --font-sans: var(--font-rajdhani);
+  --font-mono: var(--font-mono-jb);
+
+  --shadow-glow-cyan: 0 0 24px rgba(57, 217, 255, 0.45),
+    0 0 80px rgba(57, 217, 255, 0.18);
+  --shadow-glow-gold: 0 0 24px rgba(255, 181, 71, 0.45),
+    0 0 80px rgba(255, 181, 71, 0.15);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-image:
+    radial-gradient(
+      circle at 20% 10%,
+      rgba(57, 217, 255, 0.08),
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 90%,
+      rgba(255, 181, 71, 0.05),
+      transparent 50%
+    ),
+    linear-gradient(180deg, #02050a 0%, #03070d 100%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(57, 217, 255, 0.35);
+  color: #fff;
+}
+
+/* ─── Custom scrollbar ─── */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #02050a;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(57, 217, 255, 0.4),
+    rgba(57, 217, 255, 0.1)
+  );
+  border-radius: 8px;
+}
+
+/* ─── HUD grid background ─── */
+.hud-grid {
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(57, 217, 255, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(57, 217, 255, 0.06) 1px,
+      transparent 1px
+    );
+  background-size: 44px 44px;
+}
+
+.hud-grid-fine {
+  background-image:
+    linear-gradient(to right, rgba(57, 217, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(57, 217, 255, 0.04) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+/* ─── Scan line overlay ─── */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0,
+    transparent 3px,
+    rgba(57, 217, 255, 0.04) 3px,
+    rgba(57, 217, 255, 0.04) 4px
+  );
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* ─── Animations ─── */
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  43% {
+    opacity: 0.85;
+  }
+  46% {
+    opacity: 1;
+  }
+  48% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes rotate-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-flicker {
+  animation: flicker 4s linear infinite;
+}
+.animate-scan {
+  animation: scan 6s linear infinite;
+}
+.animate-pulse-ring {
+  animation: pulse-ring 3s ease-in-out infinite;
+}
+.animate-blink {
+  animation: blink 1s steps(1) infinite;
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+.animate-rotate-slow {
+  animation: rotate-slow 18s linear infinite;
+}
+.animate-rotate-reverse {
+  animation: rotate-slow 24s linear infinite reverse;
+}
+
+/* ─── Hex pattern ─── */
+.hex-pattern {
+  background-color: transparent;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(57, 217, 255, 0.15) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+}
+
+/* ─── Glow utilities ─── */
+.text-glow {
+  text-shadow:
+    0 0 8px rgba(57, 217, 255, 0.7),
+    0 0 24px rgba(57, 217, 255, 0.35);
+}
+
+.text-glow-gold {
+  text-shadow:
+    0 0 8px rgba(255, 181, 71, 0.7),
+    0 0 24px rgba(255, 181, 71, 0.35);
+}
+
+.box-glow {
+  box-shadow:
+    0 0 0 1px rgba(57, 217, 255, 0.35),
+    0 0 24px rgba(57, 217, 255, 0.25),
+    inset 0 0 24px rgba(57, 217, 255, 0.04);
+}
+
+.box-glow-strong {
+  box-shadow:
+    0 0 0 1px rgba(57, 217, 255, 0.6),
+    0 0 32px rgba(57, 217, 255, 0.5),
+    inset 0 0 32px rgba(57, 217, 255, 0.08);
+}
+
+/* ─── Section corner brackets ─── */
+.hud-corner::before,
+.hud-corner::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-cyan);
+  opacity: 0.7;
+}
+.hud-corner::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+.hud-corner::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+/* shimmer text for headings */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(57, 217, 255, 0.4) 0%,
+    rgba(214, 241, 255, 1) 50%,
+    rgba(57, 217, 255, 0.4) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* prevent FOUC for canvas */
+canvas {
+  display: block;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
